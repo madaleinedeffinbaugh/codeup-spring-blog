@@ -3,32 +3,33 @@ package com.codeup.codeupspringblog.controllers;
 import io.micrometer.common.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class MathController {
-    @GetMapping("/add/3/and/4")
+    @GetMapping("/add/{a}/and/{b}")
     @ResponseBody
-    public int add() {
-        return 7;
+    public int add(@PathVariable int a, @PathVariable int b) {
+        return a + b;
     }
 
-    @GetMapping("/subtract/3/from/10")
+    @GetMapping("/subtract/{a}/from/{b}")
     @ResponseBody
-    public int subtract() {
-        return 7;
+    public int subtract(@PathVariable int a, @PathVariable int b) {
+        return b - a;
     }
 
-    @GetMapping("/multiply/4/and/5")
+    @GetMapping("/multiply/{a}/and/{b}")
     @ResponseBody
-    public int multiply() {
-        return 20;
+    public int multiply(@PathVariable int a, @PathVariable int b) {
+        return a * b;
     }
 
-    @GetMapping("/divide/6/by/3")
+    @GetMapping("/divide/{a}/by/{b}")
     @ResponseBody
-    public int divide() {
-        return 2;
+    public int divide(@PathVariable int a, @PathVariable int b) {
+        return a / b;
     }
 }
