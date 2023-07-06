@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="partials/header :: head" />
+<body>
+<nav th:replace="partials/navbar :: navbar" />
+<h1>Let's guess some dice rolls</h1>
+<h3>Make your guess!</h3>
+<form>
+    <input type="radio" id="one" name="guessOne" value="1">
+    <label for="one">1</label>
+    <input type="radio" id="two" name="guessOne" value="2">
+    <label for="two">2</label>
+    <input type="radio" id="three" name="guessOne" value="3">
+    <label for="three">3</label>
+    <input type="radio" id="four" name="guessOne" value="4">
+    <label for="four">4</label>
+    <input type="radio" id="five" name="guessOne" value="5">
+    <label for="five">5</label>
+    <input type="radio" id="six" name="guessOne" value="6">
+    <label for="six">6</label>
+</form>
+<div th:if="${roll != null}">
+    <p>Your Guess: <span th:text="${roll}"></span></p>
+    <p>Rolls: <span th:text="${rolls}"></span></p>
+    <p>You guessed <span th:text="${correct}"></span> dice correctly</p>
+</div>
+
+
+<a href="#" id="guessOneClick">Roll Dice</a>
+
+<footer th:replace="partials/footer :: footer"></footer>
+<script>
+    function userClicks(event) {
+        event.preventDefault();
+        const selectedOption = document.querySelector('input[name="guessOne"]:checked');
+        if (selectedOption) {
+            const optionValue = selectedOption.value;
+            window.location.href = `/roll-dice/${optionValue}`;
+        } else {
+            alert('Please select an option before submitting.');
+        }
+    }
+    const userGuess = document.getElementById('guessOneClick');
+    userGuess.addEventListener('click', userClicks);
+</script>
+</body>
+</html>

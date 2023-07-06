@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="partials/header :: head" />
 <body>
 <nav th:replace="partials/navbar :: navbar" />
-<h1>Hello, <span th:text="${name}">World</span>!</h1>
+<div th:if="${post != null}">
+    <h3 th:text="${post.title}"></h3>
+    <p th:text="${post.body}"></p>
+</div>
 <footer th:replace="partials/footer :: footer"></footer>
+
 </body>
 </html>
