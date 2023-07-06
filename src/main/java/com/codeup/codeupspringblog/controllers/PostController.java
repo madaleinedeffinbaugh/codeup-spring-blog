@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "/posts")
@@ -25,17 +26,24 @@ public class PostController {
 
     @GetMapping("/{id}")
     public String getSinglePost(Model model, @PathVariable Long id) {
-        model.addAttribute("post", postDao.getReferenceById(id));
+        Optional<Post> optionalPost = postDao.findById(id);
+        if(optionalPost.isEmpty()) {
+            System.out.println("post with id " + id + " not found.");
+            //TODO error page
+            return "home";
+        }
+        model.addAttribute("post", optionalPost.get());
         return "posts/show";
     }
 
     @GetMapping("/create")
-    public String createPostPage() {
+    public String showCreatePostPage() {
         return "posts/create";
     }
 
     @PostMapping("/create")
-    public String createPost(@RequestParam(name = "postTitle") String postTitle, @RequestParam(name = "postBody") String postBody, Model model) {
+//    public String createPost(@RequestParam(name = "postTitle") String postTitle, @RequestParam(name = "postBody") String postBody) {
+    public String createPost(@RequestParam String postTitle, @RequestParam String postBody) {
         Post newPost = new Post();
         newPost.setTitle(postTitle);
         newPost.setBody(postBody);
