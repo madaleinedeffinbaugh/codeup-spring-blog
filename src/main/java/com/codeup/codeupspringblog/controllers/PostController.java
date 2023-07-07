@@ -1,6 +1,7 @@
 package com.codeup.codeupspringblog.controllers;
 
 import com.codeup.codeupspringblog.models.Post;
+import com.codeup.codeupspringblog.models.User;
 import com.codeup.codeupspringblog.repositories.PostRepository;
 import com.codeup.codeupspringblog.repositories.UserRepository;
 import org.springframework.stereotype.Controller;
@@ -45,9 +46,16 @@ public class PostController {
     @PostMapping("/create")
 //    public String createPost(@RequestParam(name = "postTitle") String postTitle, @RequestParam(name = "postBody") String postBody) {
     public String createPost(@RequestParam String postTitle, @RequestParam String postBody) {
+        Optional<User> optionalUser = userDao.findById(1L);
+        if(optionalUser.isEmpty()) {
+            System.out.println("user with id 1 not found.");
+            //TODO error page
+            return "home";
+        }
         Post newPost = new Post();
         newPost.setTitle(postTitle);
         newPost.setBody(postBody);
+        newPost.setUser(optionalUser.get());
         postDao.save(newPost);
         return "redirect:/posts";
     }
