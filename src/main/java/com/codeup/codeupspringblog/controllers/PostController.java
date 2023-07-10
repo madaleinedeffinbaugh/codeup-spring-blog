@@ -62,4 +62,31 @@ public class PostController {
         return "redirect:/posts";
     }
 
+    @GetMapping("/{id}/edit")
+    public String showEditPostPage(@PathVariable Long id, Model model) {
+        Optional<Post> post = postDao.findById(id);
+        if(post.isEmpty()) {
+            System.out.println("post not found.");
+            //TODO error page
+            return "home";
+        }
+        model.addAttribute("post", post.get());
+        return "posts/create";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editPost(@PathVariable Long id, @ModelAttribute Post post) {
+        Optional<User> optionalUser = userDao.findById(1L);
+        if(optionalUser.isEmpty()) {
+            System.out.println("user with id 1 not found.");
+            //TODO error page
+            return "home";
+        }
+//        post.setId(id);
+        post.setUser(optionalUser.get());
+        postDao.save(post);
+        emailService.prepareAndSend(optionalUser.get(),"test","testy");
+        return "redirect:/posts";
+    }
+
 }
