@@ -1,5 +1,6 @@
 package com.codeup.codeupspringblog.controllers;
 
+import com.codeup.codeupspringblog.models.EmailService;
 import com.codeup.codeupspringblog.models.Post;
 import com.codeup.codeupspringblog.models.User;
 import com.codeup.codeupspringblog.repositories.PostRepository;
@@ -15,9 +16,12 @@ import java.util.Optional;
 public class PostController {
     private final PostRepository postDao;
     private final UserRepository userDao;
-    public PostController(PostRepository postDao, UserRepository userDao) {
+
+    private EmailService emailService;
+    public PostController(PostRepository postDao, UserRepository userDao, EmailService emailService) {
         this.postDao = postDao;
         this.userDao = userDao;
+        this.emailService = emailService;
     }
 
     @GetMapping()
@@ -57,6 +61,7 @@ public class PostController {
         newPost.setBody(postBody);
         newPost.setUser(optionalUser.get());
         postDao.save(newPost);
+        emailService.prepareAndSend(optionalUser.get(),"test","testy");
         return "redirect:/posts";
     }
 
