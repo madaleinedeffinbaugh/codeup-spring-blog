@@ -3,11 +3,11 @@
 <head th:replace="partials/header :: head" />
 <body>
 <nav th:replace="partials/navbar :: navbar" />
-<form action="/posts/create" method="POST">
+<form action="/posts/create" method="POST" th:object="${post}">
   <label for="postTitle">Title:</label>
-  <input type="text" id="postTitle" name="postTitle">
+  <input type="text" id="postTitle" name="postTitle" th:field="*{title}">
   <label for="postBody">Body:</label>
-  <input type="text" id="postBody" name="postBody">
+  <input type="text" id="postBody" name="postBody" th:field="*{body}">
   <button type="submit">Submit</button>
 </form>
 <footer th:replace="partials/footer :: footer"></footer>

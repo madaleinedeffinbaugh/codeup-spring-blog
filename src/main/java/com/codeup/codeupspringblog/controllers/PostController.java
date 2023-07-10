@@ -43,24 +43,21 @@ public class PostController {
     }
 
     @GetMapping("/create")
-    public String showCreatePostPage() {
+    public String showCreatePostPage(Model model) {
+        model.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/create")
-//    public String createPost(@RequestParam(name = "postTitle") String postTitle, @RequestParam(name = "postBody") String postBody) {
-    public String createPost(@RequestParam String postTitle, @RequestParam String postBody) {
+    public String createPost(@ModelAttribute Post post) {
         Optional<User> optionalUser = userDao.findById(1L);
         if(optionalUser.isEmpty()) {
             System.out.println("user with id 1 not found.");
             //TODO error page
             return "home";
         }
-        Post newPost = new Post();
-        newPost.setTitle(postTitle);
-        newPost.setBody(postBody);
-        newPost.setUser(optionalUser.get());
-        postDao.save(newPost);
+        post.setUser(optionalUser.get());
+        postDao.save(post);
         emailService.prepareAndSend(optionalUser.get(),"test","testy");
         return "redirect:/posts";
     }
