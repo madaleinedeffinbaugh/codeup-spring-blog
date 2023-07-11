@@ -5,6 +5,7 @@ import com.codeup.codeupspringblog.models.Post;
 import com.codeup.codeupspringblog.models.User;
 import com.codeup.codeupspringblog.repositories.PostRepository;
 import com.codeup.codeupspringblog.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,21 +45,20 @@ public class PostController {
 
     @GetMapping("/create")
     public String showCreatePostPage(Model model) {
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(loggedInUser.getId() == 0) {
+            return "redirect:/login";
+        }
         model.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/create")
     public String createPost(@ModelAttribute Post post) {
-        Optional<User> optionalUser = userDao.findById(1L);
-        if(optionalUser.isEmpty()) {
-            System.out.println("user with id 1 not found.");
-            //TODO error page
-            return "home";
-        }
-        post.setUser(optionalUser.get());
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        post.setUser(loggedInUser);
         postDao.save(post);
-        emailService.prepareAndSend(optionalUser.get(),"test","testy");
+        emailService.prepareAndSend(loggedInUser,"test","testy");
         return "redirect:/posts";
     }
 
@@ -68,7 +68,12 @@ public class PostController {
         if(post.isEmpty()) {
             System.out.println("post not found.");
             //TODO error page
-            return "home";
+            return "redirect:/posts";
+        }
+        System.out.println("post user it " + post.get().getUser().getId());
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (loggedInUser.getId() != post.get().getUser().getId()) {
+            return "redirect:/posts";
         }
         model.addAttribute("post", post.get());
         return "posts/create";
@@ -76,16 +81,10 @@ public class PostController {
 
     @PostMapping("/{id}/edit")
     public String editPost(@PathVariable Long id, @ModelAttribute Post post) {
-        Optional<User> optionalUser = userDao.findById(1L);
-        if(optionalUser.isEmpty()) {
-            System.out.println("user with id 1 not found.");
-            //TODO error page
-            return "home";
-        }
-//        post.setId(id);
-        post.setUser(optionalUser.get());
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        post.setUser(loggedInUser);
         postDao.save(post);
-        emailService.prepareAndSend(optionalUser.get(),"test","testy");
+        emailService.prepareAndSend(loggedInUser,"test","testy");
         return "redirect:/posts";
     }
 
